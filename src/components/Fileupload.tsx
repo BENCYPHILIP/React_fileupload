@@ -3,6 +3,10 @@ import {
   Button,
   Flex,
   Heading,
+  Icon,
+  Input,
+  InputGroup,
+  InputLeftElement,
   Stack,
   Table,
   TableCaption,
@@ -12,6 +16,7 @@ import {
   Thead,
   Tr,useToast
 } from "@chakra-ui/react";
+import {BsSearch } from "react-icons/bs";
 import axios from "axios";
 import React, { useState } from "react";
 import { Select } from "@chakra-ui/react";
@@ -114,28 +119,33 @@ const Fileupload: React.FC = () => {
             {bankdata.length>0?
 
             ( 
-              <Table variant="striped" colorScheme="blue">
-          
-              <Thead>
-                <Tr>
-                  <Th>ID</Th>
-                  <Th>Name</Th>
-                  <Th isNumeric>Amount</Th>
-                  <Th isNumeric>Payment Mode</Th>
-                </Tr>
-              </Thead>
-              
-              <Tbody>
-              {bankdata.map((items: any) => (
-                <Tr alignContent={'center'}>
-                  <Td>{items.REFNO}</Td>
-                    <Td>{items.BANKNAME}</Td>
-                    <Td>{items.AMOUNTS}</Td>
-                    <Td>{items.PAYMENTMODE}</Td> 
-               
-                </Tr>
-              ))}
-            </Tbody> </Table>): <p>No Data Available</p>}
+              <><Box>
+                <InputGroup style={{ background: "white" }}>
+                  <InputLeftElement pointerEvents="none" children={<Icon as={BsSearch} />} />
+                  <Input type="text" placeholder="Search" />
+                </InputGroup>
+              </Box><Table variant="striped" colorScheme="blue">
+
+                  <Thead>
+                    <Tr>
+                      <Th>ID</Th>
+                      <Th>Name</Th>
+                      <Th isNumeric>Amount</Th>
+                      <Th isNumeric>Payment Mode</Th>
+                    </Tr>
+                  </Thead>
+
+                  <Tbody>
+                    {bankdata.map((items: any) => (
+                      <Tr alignContent={'center'}>
+                        <Td>{items.REFNO}</Td>
+                        <Td>{items.BANKNAME}</Td>
+                        <Td>{items.AMOUNTS}</Td>
+                        <Td>{items.PAYMENTMODE}</Td>
+
+                      </Tr>
+                    ))}
+                  </Tbody> </Table></>): <p>No Data Available</p>}
           
           
          
