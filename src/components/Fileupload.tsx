@@ -10,14 +10,16 @@ import {
   Td,
   Th,
   Thead,
-  Tr,
+  Tr,useToast
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
 import { Select } from "@chakra-ui/react";
 const Fileupload: React.FC = () => {
-  const [bankname, setBankname] = useState("");
+  const [bankname, setBankname] = useState<any | null>();
   const [uploadedFile, setuploadedFile] = useState<any | null>(null);
+  const [bankdata, setBankdata] = useState([]);
+  const toast = useToast();
   const fileuploaddatas = (e: any) => {
     setuploadedFile(e.target.files[0]);
   };
@@ -28,19 +30,29 @@ const Fileupload: React.FC = () => {
     event.preventDefault();
     const formData = new FormData();
     console.log("submit button");
-    formData.append("Bank_name", bankname);
-    formData.append("file", uploadedFile);
+    formData.append("BANKNAMES", bankname);
+    formData.append("excelfile", uploadedFile);
 
-    console.log(formData.getAll("Bank_name"));
-    console.log(formData.getAll("file"));
+    console.log(formData.getAll("BANKNAMES"));
+    console.log(formData.getAll("excelfile"));
     axios
-      .post("https:localhost:3000/dummy", formData)
+      .post("http://3ce1-115-246-244-26.ngrok.io/exceltojson/excell", formData)
       .then((res: any) => {
-        alert("File Upload success");
-      })
-      .catch((err: any) => alert("File Upload Error"));
+        if (res.data.status === true) {
+          setBankdata(res.data.resdata);
+          toast({
+            title: "File Uploaded.",
+            description: "File uploaded sucessfully.",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+            position: "top-right"
+          });
+          console.log(res.data.resdata);
+        }
+      });
   };
-  
+  console.log("bankdata", bankdata);
   return (
     <Flex
       flexDirection="column"
@@ -96,39 +108,37 @@ const Fileupload: React.FC = () => {
             </Stack>
           </form>
         </Box>
-        <Box minW={{ base: "90%", md: "668px" }}>
-          <Table variant="striped" colorScheme="blue">
-            <TableCaption>Transaction Details</TableCaption>
-            <Thead>
-              <Tr>
-                <Th>ID</Th>
-                <Th>Name</Th>
-                <Th isNumeric>Reference Number</Th>
-                <Th isNumeric>Amount</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td>HDFC001</Td>
-                <Td>Jack</Td>
-                <Td isNumeric>909090</Td>
-                <Td isNumeric>30000</Td>
-              </Tr>
 
-              <Tr>
-                <Td>HDFC002</Td>
-                <Td>Mary</Td>
-                <Td isNumeric>908989</Td>
-                <Td isNumeric>25000</Td>
-              </Tr>
-              <Tr>
-                <Td>HDFC0013</Td>
-                <Td>Rose</Td>
-                <Td isNumeric>98768</Td>
-                <Td isNumeric>30000</Td>
-              </Tr>
-            </Tbody>
-          </Table>
+        <Box minW={{ base: "90%", md: "668px" }}>
+         
+            {bankdata.length>0?
+
+            ( 
+              <Table variant="striped" colorScheme="blue">
+          
+              <Thead>
+                <Tr>
+                  <Th>ID</Th>
+                  <Th>Name</Th>
+                  <Th isNumeric>Amount</Th>
+                  <Th isNumeric>Payment Mode</Th>
+                </Tr>
+              </Thead>
+              
+              <Tbody>
+              {bankdata.map((items: any) => (
+                <Tr alignContent={'center'}>
+                  <Td>{items.REFNO}</Td>
+                    <Td>{items.BANKNAME}</Td>
+                    <Td>{items.AMOUNTS}</Td>
+                    <Td>{items.PAYMENTMODE}</Td> 
+               
+                </Tr>
+              ))}
+            </Tbody> </Table>): <p>No Data Available</p>}
+          
+          
+         
         </Box>
       </Stack>
     </Flex>
