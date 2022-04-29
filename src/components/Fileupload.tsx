@@ -9,7 +9,6 @@ import {
   InputLeftElement,
   Stack,
   Table,
-  TableCaption,
   Tbody,
   Td,
   Th,
@@ -24,12 +23,16 @@ const Fileupload: React.FC = () => {
   const [bankname, setBankname] = useState<any | null>();
   const [uploadedFile, setuploadedFile] = useState<any | null>(null);
   const [bankdata, setBankdata] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const toast = useToast();
   const fileuploaddatas = (e: any) => {
     setuploadedFile(e.target.files[0]);
   };
   const handleupload = (e: any) => {
     console.log("setuploadedFile", uploadedFile);
+  };
+  const onSearch =  (e:any) => {
+    setSearchTerm(e.target.value);
   };
   const fileupload = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,8 +43,9 @@ const Fileupload: React.FC = () => {
 
     console.log(formData.getAll("BANKNAMES"));
     console.log(formData.getAll("excelfile"));
+    
     axios
-      .post("http://3ce1-115-246-244-26.ngrok.io/exceltojson/excell", formData)
+      .post(" http://2aaf-115-246-244-26.ngrok.io/exceltojson/excell", formData)
       .then((res: any) => {
         if (res.data.status === true) {
           setBankdata(res.data.resdata);
@@ -122,7 +126,7 @@ const Fileupload: React.FC = () => {
               <><Box>
                 <InputGroup style={{ background: "white" }}>
                   <InputLeftElement pointerEvents="none" children={<Icon as={BsSearch} />} />
-                  <Input type="text" placeholder="Search" />
+                  <Input type="text" placeholder="Search"  onChange={onSearch}/>
                 </InputGroup>
               </Box><Table variant="striped" colorScheme="blue">
 
